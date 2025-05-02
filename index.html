@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tibetan Royal Mushroom</title>
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fdfdfd;
+      color: #222;
+      margin: 0;
+      padding: 0;
+    }
+    header, footer {
+      background-color: #111;
+      color: white;
+      text-align: center;
+      padding: 1em;
+    }
+    nav a {
+      margin: 0 1em;
+      color: white;
+      text-decoration: none;
+    }
+    .hero {
+      background-image: url('images/hero.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2em;
+    }
+    .content {
+      padding: 2em;
+      max-width: 900px;
+      margin: auto;
+    }
+    .product-img {
+      width: 100%;
+      max-width: 500px;
+      margin: 1em auto;
+      display: block;
+    }
+    .buy-button {
+      display: inline-block;
+      padding: 1em 2em;
+      background-color: #006400;
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+    .social {
+      margin-top: 1em;
+    }
+    .social a {
+      margin: 0 0.5em;
+      color: white;
+      text-decoration: none;
+      font-size: 1.5em;
+    }
+    #paypal-button-container, #mercado-pago-button-container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Tibetan Royal Mushroom</h1>
+    <nav>
+      <a href="#producto">Producto</a>
+      <a href="#comprar">Comprar</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div>Salud Regenerativa Natural</div>
+  </section>
+
+  <section class="content" id="producto">
+    <h2>Sobre el producto</h2>
+    <p>Nuestro HONGO SETA TIBETANO mezclado con nuestra exclusiva fórmula de Ginseng Rojo Coreano, Cuerno de Alce y Jalea Real, 100% orgánica. Recomendado por el International Mycotherapy Institute. No contiene almidón, maíz, azúcar, soja ni lácteos.</p>
+    <img class="product-img" src="images/product.jpg" alt="Tibetan Royal Mushroom">
+    <p>Tratamiento recomendado de 3 meses para una salud óptima sin químicos ni efectos secundarios.</p>
+  </section>
+
+  <section class="content" id="comprar">
+    <h2>Compra ahora</h2>
+    <p>Pack de 6 frascos - USD $79.99</p>
+    <div id="paypal-button-container"></div>
+    <div id="mercado-pago-button-container">
+      <button id="checkout-button">Pagar con Mercado Pago</button>
+    </div>
+    <p><small>*Incluye envío gratis a todo el país</small></p>
+  </section>
+
+  <section class="content" id="contacto">
+    <h2>Contáctanos</h2>
+    <p>Email: lyonsnaturalhealth@gmail.com</p>
+    <p>Teléfono / WhatsApp: 7773770073</p>
+    <div class="social">
+      <a href="https://wa.me/527773770073" target="_blank">WhatsApp</a>
+      <a href="mailto:lyonsnaturalhealth@gmail.com">Email</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Tibetan Royal Mushroom - Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+    paypal.Buttons({
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{ amount: { value: '79.99' } }]
+        });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          alert('Gracias por tu compra, ' + details.payer.name.given_name + '!');
+        });
+      }
+    }).render('#paypal-button-container');
+
+    const mp = new MercadoPago('YOUR_PUBLIC_KEY', { locale: 'es-MX' });
+    document.getElementById('checkout-button').addEventListener('click', function () {
+      fetch("https://api.mercadopago.com/checkout/preferences", {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer YOUR_ACCESS_TOKEN",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          items: [{
+            title: "Tibetan Royal Mushroom",
+            quantity: 1,
+            currency_id: "USD",
+            unit_price: 79.99
+          }]
+        })
+      })
+      .then(response => response.json())
+      .then(preference => {
+        window.location.href = preference.init_point;
+      });
+    });
+  </script>
+</body>
+</html>
